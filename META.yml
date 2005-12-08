@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name: CGI-Application-Plugin-HTCompiled
-version: 1.00
+version: 1.01
 author:
   - Mark Stosberg<mark@summersault.com>
 abstract: Integrate with HTML::Template::Compiled
@@ -13,5 +13,5 @@ requires:
 provides:
   CGI::Application::Plugin::HTCompiled:
     file: lib/CGI/Application/Plugin/HTCompiled.pm
-    version: 1.00
+    version: 1.01
 generated_by: Module::Build version 0.2611

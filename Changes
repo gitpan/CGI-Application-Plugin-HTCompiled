@@ -1,15 +1,6 @@
-Revision history for CGI-Application-Plugin-HTDot
+Revision history for CGI-Application-Plugin-HTCompiled
 
-        - Update load_tmpl() functionality to match how CGI::App 4.04 works (Mark Stosberg)
-        - Add "c" key to templates by default to allow access to template object. Thanks to
-          the TT plugin for the inspiration and documenation for this. (Mark Stosberg).  
+1.01 Wed Dec  7 23:08:30 EST 2005
+    - Fixed this Changes file...
 
-0.03    2005/08/18
-        - Added module dependencies to Build.PL.  Updated acknowledgments.
-
-0.02    2005/08/16
-        - First public version, released on an unsuspecting world.  Mwahaha! ;)
-
-0.01    Never released 
-        - For my own testing purposes.
-
+1.00 First release
