@@ -1,6 +1,13 @@
 package CGI::Application::Plugin::HTCompiled;
-use Carp;
+
+use CGI::Application 4.31;
+
+use 5.006;
+
 use strict;
+use warnings;
+use Carp;
+use UNIVERSAL qw/isa/;
 
 =head1 NAME
 
@@ -8,12 +15,13 @@ CGI::Application::Plugin::HTCompiled - Integrate with HTML::Template::Compiled
 
 =cut
 
-$CGI::Application::Plugin::HTCompiled::VERSION = '1.01';
+$CGI::Application::Plugin::HTCompiled::VERSION = '1.02';
 
 =head1 SYNOPSIS
 
     # In your CGI::Application-derived base class. . . 
-    use base ("CGI::Application::Plugin::HTCompiled", "CGI::Application");
+    use base "CGI::Application";
+    use CGI::Application::Plugin::HTCompiled;
 
     # Later, in a run mode far, far away. . . 
     sub view
@@ -26,17 +34,120 @@ $CGI::Application::Plugin::HTCompiled::VERSION = '1.01';
 
         $tmpl_view->param( user => $user );
 
-        return $tmpl_view->output;
+        return $tmpl_view->output();
     }
 
 =head1 DESCRIPTION
 
 Allows you to use L<HTML::Template::Compiled> as a seamless replacement 
-for HTML::Template, as far as is possible with that module. 
+for HTML::Template.
+
+
+=head1 DEFAULT PARAMETERS
+
+By default, the HTCompiled plugin will automatically add a parameter 'c' to the template that
+will return to your CGI::Application object $self.  This allows you to access any
+methods in your CGI::Application module that you could normally call on $self
+from within your template.  This allows for some powerful actions in your templates.
+For example, your templates will be able to access query parameters, or if you use
+the CGI::Application::Plugin::Session module, you can access session parameters.
+
+ <a href="<tmpl_var c.query.self_url>">Reload this page</a>
+
+With this extra flexibility comes some responsibilty as well.  It could lead down a
+dangerous path if you start making alterations to your object from within the template.
+For example you could call c.header_add to add new outgoing headers, but that is something
+that should be left in your code, not in your template.  Try to limit yourself to
+pulling in information into your templates (like the session example above does).
+
+=head2 Extending load_tmpl()
+
+There are times when the basic C<load_tmpl()> functionality just isn't 
+enough.   The easiest way to do this is by replacing or
+extending the functionality of L<CGI::Application>'s C<load_tmpl()> method.
+This is still possible using the plugin.  
+
+The following code snippet illustrates one possible way of achieving this:
+
+  sub load_tmpl
+  {
+      my ($self, $tmpl_file, @extra_params) = @_;
+
+      push @extra_params, "cache",             "1";
+      return $self->SUPER::load_tmpl($tmpl_file, @extra_params);
+  }
+
+
 
 =head1 FUNCTIONS
 
+This is documentation of how it is done internally. If you actually are looking
+for how to use this module, see SYNOPSIS. There isn't anything else to do than
+using this plugin.
+
+=head2 import()
+
+Will be called when your Module uses L<HTML::Template::Compiled>. Registers
+callbacks at the init and the load_tmpl stages. This is how the plugin
+mechanism works.
+
+=cut
+
+sub import {
+    my $caller = scalar( caller );
+	
+	# -- determine if the module has been used as base class or as plugin.
+	return unless $caller->isa('CGI::Application');
+	
+	$caller->add_callback( 'init' => \&_add_init );
+    $caller->add_callback( 'load_tmpl' => \&_pass_in_self );
+    goto &Exporter::import;
+} # /import
+
+
+
+
+=head2 _pass_in_self()
+
+Adds the parameter c each template that will be processed. See
+DEFAULT PARAMETERS for more information.
+
+=cut
+
+sub _pass_in_self {
+	my ( $self, $one, $tmpl_params, $template_file ) = @_;
+	
+	# we won't warn, assuming that the user set param "c" intensionally
+	#warn("Template param 'c' will be overwritten.") if exists $tmpl_params->{c};
+	$tmpl_params->{c} = $self;
+} # /_pass_in_self
+
+
+
+
+=head2 _add_init()
+
+Set html_tmpl_class to L<HTML::Template::Compiled> at the init stage. That way,
+each time a template is loaded using load_tmpl, an instance of
+HTML::Template::Compiled will be created instead of the defualt HTML::Template.
+See the l<CGI::Appliaction> manpage for more information.
+
+=cut
+
+sub _add_init {
+	my $self = shift;
+	$self->html_tmpl_class('HTML::Template::Compiled');
+} # /_add_init
+
+
+
+
 =head2 load_tmpl()
+
+This method exists to ensure backward compatibility only. It overrides
+CGI::Application's load_tmpl() when this plugin is used the old way.
+See BACKWARD COMPATIBILITY for more information and please just don't use it
+that way anymore.
 
 For the most part, this is the exact C<load_tmpl()> method from 
 L<CGI::Application>, except it uses L<HTML::Template::Compiled> instead of L<HTML::Template>.
@@ -48,6 +159,8 @@ on what parameters can be passed to C<load_tmpl()>.
 
 sub load_tmpl {
 	my $self = shift;
+	return $self->SUPER::load_tmpl(@_) unless $self->isa('CGI::Application::Plugin::HTCompiled');
+	
 	my ($tmpl_file, @extra_params) = @_;
 
 	# add tmpl_path to path array if one is set, otherwise add a path arg
@@ -104,39 +217,144 @@ sub load_tmpl {
 	return $t;
 }
 
-=head1 DEFAULT PARAMETERS
 
-By default, the HTCompiled plugin will automatically add a parameter 'c' to the template that
-will return to your CGI::Application object $self.  This allows you to access any
-methods in your CGI::Application module that you could normally call on $self
-from within your template.  This allows for some powerful actions in your templates.
-For example, your templates will be able to access query parameters, or if you use
-the CGI::Application::Plugin::Session module, you can access session parameters.
 
- <a href="<tmpl_var c.query.self_url>">Reload this page</a>
 
-With this extra flexibility comes some responsibilty as well.  It could lead down a
-dangerous path if you start making alterations to your object from within the template.
-For example you could call c.header_add to add new outgoing headers, but that is something
-that should be left in your code, not in your template.  Try to limit yourself to
-pulling in information into your templates (like the session example above does).
 
-=head2 Extending load_tmpl()
+=head1 BACKWARD COMPATIBILITY
 
-There are times when the basic C<load_tmpl()> functionality just isn't 
-enough.   The easiest way to do this is by replacing or
-extending the functionality of L<CGI::Application>'s C<load_tmpl()> method.
-This is still possible using the plugin.  
+You can still use the old method using the module by inheriting from it.
+This is not recommended, as it overrides CGI::Application's load_tmpl().
 
-The following code snippet illustrates one possible way of achieving this:
+    # In your CGI::Application-derived base class. . . 
+    use base ("CGI::Application::Plugin::HTCompiled", "CGI::Application");
 
-  sub load_tmpl
-  {
-      my ($self, $tmpl_file, @extra_params) = @_;
+    # Later, in a run mode far, far away. . . 
+    sub view
+    {
+        my $self = shift;
+        my $username = $self->query->param("user");
+        my $user     = My::Users->retrieve($username);
 
-      push @extra_params, "cache",             "1";
-      return $self->SUPER::load_tmpl($tmpl_file, @extra_params);
-  }
+        my $tmpl_view = $self->load_tmpl( "view_user.tmpl" );
+
+        $tmpl_view->param( user => $user );
+
+        return $tmpl_view->output();
+    }
+
+
+=head1 EXAMPLE
+
+Define your CGI::Application derived base class.
+	
+	package CGIApplicationDerivedBaseClass;
+	
+	use strict;
+	use warnings;
+	
+	use FindBin qw/$Bin/;
+	use lib $Bin . '/lib';
+	
+	use base qw/CGI::Application/;
+	
+	use CGI::Application::Plugin::HTCompiled;
+	
+	=head1 NAME
+	
+	CGIApplicationDerivedBaseClass - Perl extension for demonstrating
+	CGI::Application::Plugin::HTCompiled.
+	
+	=head1 SYNOPSIS
+	
+		use strict;
+		use warnings;
+	
+		my $app = CGIApplicationDerivedBaseClass->new();
+		$app->run();
+	
+	=head1 DESCRIPTION
+	
+	This demonstrates, how to use CGI::Application::Plugin::HTCompiled.
+	
+	
+	=head1 METHODS
+	
+	=head2 setup()
+	
+	Defined runmodes, etc.
+	
+	=cut
+	
+	sub setup {
+		my $self = shift;
+		
+		$self->start_mode('start');
+		$self->run_modes([qw/
+			start
+		/]);
+		
+	} # /setup
+	
+	
+	
+	
+	=head2 start()
+	
+	=cut
+	
+	sub start {
+		my $self 	= shift;
+		
+		my $tmpl_content = qq~
+	<h1>Hi!</h1>
+	
+	<p>You are here: <TMPL_VAR c.query.url> (this is HTML::Compiled magic)</p>
+	<p>You are using CAP::HTC version <TMPL_VAR version></p>
+		~;
+		
+		my $t = $self->load_tmpl(\$tmpl_content);
+		$t->param(version => $CGI::Application::Plugin::HTCompiled::VERSION);
+		return $t->output();
+	} # /start
+	
+	
+	
+	
+	=head1 SEE ALSO
+	
+	CGI::Application, CGI::Application::Plugin::HTCompiled.
+	
+	=head1 AUTHOR
+	
+	Alexander Becler, E<lt>c a p f a n < a t > g m x . d eE<gt>
+	
+	=head1 COPYRIGHT AND LICENSE
+	
+	Copyright (C) 2009 by Alexander Becker
+	
+	This library is free software; you can redistribute it and/or modify it under
+	the same terms as Perl itself, either Perl version 5.8.8 or, at your option,
+	any later version of Perl 5 you may have available.
+	
+	=cut
+	
+	1;
+	
+
+Create an instance and run.
+
+	#!/usr/bin/perl
+	
+	use strict;
+	use warnings;
+	use FindBin qw/$Bin/;
+	use lib $Bin . '/lib';
+	
+	my $app = CGIApplicationDerivedBaseClass->new();
+	$app->run();
+
+
 
 =head1 AUTHOR
 

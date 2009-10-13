@@ -3,68 +3,62 @@ NAME
     HTML::Template::Compiled
 
 SYNOPSIS
-        # In your CGI::Application-derived base class. . . 
-        use base ("CGI::Application::Plugin::HTCompiled", "CGI::Application");
+    # In your CGI::Application-derived base class. . . 
+    use base "CGI::Application";
+    use CGI::Application::Plugin::HTCompiled;
 
-        # Later, in a run mode far, far away. . . 
-        sub view
-        {
-            my $self = shift;
-            my $username = $self->query->param("user");
-            my $user     = My::Users->retrieve($username);
+    # Later, in a run mode far, far away. . . 
+    sub view
+    {
+        my $self = shift;
+        my $username = $self->query->param("user");
+        my $user     = My::Users->retrieve($username);
 
-            my $tmpl_view = $self->load_tmpl( "view_user.tmpl" );
+        my $tmpl_view = $self->load_tmpl( "view_user.tmpl" );
 
-            $tmpl_view->param( user => $user );
+        $tmpl_view->param( user => $user );
 
-            return $tmpl_view->output;
-        }
+        return $tmpl_view->output();
+    }
 
 DESCRIPTION
-    Allows you to use HTML::Template::Compiled as a seamless replacement for
-    HTML::Template, as far as is possible with that module.
+    Allows you to use L<HTML::Template::Compiled> as a seamless replacement 
+    for HTML::Template.
 
 FUNCTIONS
-  load_tmpl()
-    For the most part, this is the exact "load_tmpl()" method from
-    CGI::Application, except it uses HTML::Template::Compiled instead of
-    HTML::Template.
-
-    See the CGI::Application reference for more detailed information on what
-    parameters can be passed to "load_tmpl()".
+    There are no functions provided. All that is done is the registration of a
+    functionality at the load_tmpl hook of CGI::Application.
+    If you "use CGI::Application::Plugin::HTCompiled", you have done all you
+    need to do to be able to use HTML::Template::Compiled as templating engine.
 
 DEFAULT PARAMETERS
-    By default, the HTCompiled plugin will automatically add a parameter 'c'
-    to the template that will return to your CGI::Application object $self.
-    This allows you to access any methods in your CGI::Application module
-    that you could normally call on $self from within your template. This
-    allows for some powerful actions in your templates. For example, your
-    templates will be able to access query parameters, or if you use the
-    CGI::Application::Plugin::Session module, you can access session
-    parameters.
-
+    By default, the HTCompiled plugin will automatically add a parameter 'c' to the template that
+    will return to your CGI::Application object $self.  This allows you to access any
+    methods in your CGI::Application module that you could normally call on $self
+    from within your template.  This allows for some powerful actions in your templates.
+    For example, your templates will be able to access query parameters, or if you use
+    the CGI::Application::Plugin::Session module, you can access session parameters.
+    
      <a href="<tmpl_var c.query.self_url>">Reload this page</a>
-
-    With this extra flexibility comes some responsibilty as well. It could
-    lead down a dangerous path if you start making alterations to your
-    object from within the template. For example you could call c.header_add
-    to add new outgoing headers, but that is something that should be left
-    in your code, not in your template. Try to limit yourself to pulling in
-    information into your templates (like the session example above does).
+    
+    With this extra flexibility comes some responsibilty as well.  It could lead down a
+    dangerous path if you start making alterations to your object from within the template.
+    For example you could call c.header_add to add new outgoing headers, but that is something
+    that should be left in your code, not in your template.  Try to limit yourself to
+    pulling in information into your templates (like the session example above does).
 
   Extending load_tmpl()
-    There are times when the basic "load_tmpl()" functionality just isn't
-    enough. The easiest way to do this is by replacing or extending the
-    functionality of CGI::Application's "load_tmpl()" method. This is still
-    possible using the plugin.
-
-    The following code snippet illustrates one possible way of achieving
-    this:
-
+    There are times when the basic C<load_tmpl()> functionality just isn't 
+    enough.   The easiest way to do this is by replacing or
+    extending the functionality of L<CGI::Application>'s C<load_tmpl()> method.
+    This is still possible using the plugin.  
+    
+    The following code snippet illustrates one possible way of achieving this:
+    
       sub load_tmpl
       {
           my ($self, $tmpl_file, @extra_params) = @_;
-
+    
           push @extra_params, "cache",             "1";
           return $self->SUPER::load_tmpl($tmpl_file, @extra_params);
       }
