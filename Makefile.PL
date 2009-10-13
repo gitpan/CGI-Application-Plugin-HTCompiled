@@ -8,7 +8,7 @@ WriteMakefile
                            'CGI::Application' => '>= 4.31',
                            'HTML::Template::Compiled' => '0',
                            'Test::Exception' => '0',
-                           'Test::More' => '0'
+                           'Test::More' => '0',
 						   'UNIVERSAL' => '0',
                          },
           'INSTALLDIRS' => 'site',

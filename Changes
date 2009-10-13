@@ -1,5 +1,8 @@
 Revision history for CGI-Application-Plugin-HTCompiled
 
+1.03 Tue Oct 13 20:25:50 2009
+    - No code changes. I just didn't upload the last version the right way.
+
 1.02 Tue Oct 13 16:54:32 2009
     - Changed the way the plugin gets used from inheritance to ordinary "use".
     - Changed some tests.
