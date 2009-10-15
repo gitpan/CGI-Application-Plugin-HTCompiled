@@ -1,25 +1,26 @@
---- #YAML:1.0
-name:               CGI-Application-Plugin-HTCompiled
-version:            1.03
-abstract:           ~
-author:  []
-license:            unknown
-distribution_type:  module
-configure_requires:
-    ExtUtils::MakeMaker:  0
-build_requires:
-    ExtUtils::MakeMaker:  0
+---
+name: CGI-Application-Plugin-HTCompiled
+version: 1.04
+author:
+  - 'Mark Stosberg<mark@summersault.com>'
+abstract: Integrate with HTML::Template::Compiled
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
 requires:
-    CGI::Application:     >= 4.31
-    HTML::Template::Compiled:  0
-    Test::Exception:      0
-    Test::More:           0
-    UNIVERSAL:            0
-no_index:
-    directory:
-        - t
-        - inc
-generated_by:       ExtUtils::MakeMaker version 6.52
+  CGI::Application: '>= 4.31'
+  ExtUtils::Install: '>= 1.52'
+  HTML::Template::Compiled: 0
+  Test::Exception: 0
+  Test::More: 0
+  UNIVERSAL: 0
+configure_requires:
+  Module::Build: 0.340201
+provides:
+  CGI::Application::Plugin::HTCompiled:
+    file: lib/CGI/Application/Plugin/HTCompiled.pm
+    version: 1.04
+generated_by: Module::Build version 0.340201
 meta-spec:
-    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
-    version:  1.4
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4

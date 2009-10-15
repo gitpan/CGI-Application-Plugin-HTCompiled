@@ -15,7 +15,7 @@ CGI::Application::Plugin::HTCompiled - Integrate with HTML::Template::Compiled
 
 =cut
 
-$CGI::Application::Plugin::HTCompiled::VERSION = '1.03';
+$CGI::Application::Plugin::HTCompiled::VERSION = '1.04';
 
 =head1 SYNOPSIS
 
@@ -40,7 +40,7 @@ $CGI::Application::Plugin::HTCompiled::VERSION = '1.03';
 =head1 DESCRIPTION
 
 Allows you to use L<HTML::Template::Compiled> as a seamless replacement 
-for HTML::Template.
+for L<HTML::Template>.
 
 
 =head1 DEFAULT PARAMETERS
@@ -57,7 +57,7 @@ the CGI::Application::Plugin::Session module, you can access session parameters.
 With this extra flexibility comes some responsibilty as well.  It could lead down a
 dangerous path if you start making alterations to your object from within the template.
 For example you could call c.header_add to add new outgoing headers, but that is something
-that should be left in your code, not in your template.  Try to limit yourself to
+that should be left in your code, not in your template. Try to limit yourself to
 pulling in information into your templates (like the session example above does).
 
 =head2 Extending load_tmpl()
@@ -88,7 +88,7 @@ using this plugin.
 =head2 import()
 
 Will be called when your Module uses L<HTML::Template::Compiled>. Registers
-callbacks at the init and the load_tmpl stages. This is how the plugin
+callbacks at the C<init> and the C<load_tmpl> stages. This is how the plugin
 mechanism works.
 
 =cut
@@ -130,7 +130,7 @@ sub _pass_in_self {
 Set html_tmpl_class to L<HTML::Template::Compiled> at the init stage. That way,
 each time a template is loaded using load_tmpl, an instance of
 HTML::Template::Compiled will be created instead of the defualt HTML::Template.
-See the l<CGI::Appliaction> manpage for more information.
+See the L<CGI::Appliaction> manpage for more information.
 
 =cut
 
@@ -224,7 +224,7 @@ sub load_tmpl {
 =head1 BACKWARD COMPATIBILITY
 
 You can still use the old method using the module by inheriting from it.
-This is not recommended, as it overrides CGI::Application's load_tmpl().
+This is not recommended, as it overrides L<CGI::Application>'s C<load_tmpl()>.
 
     # In your CGI::Application-derived base class. . . 
     use base ("CGI::Application::Plugin::HTCompiled", "CGI::Application");
@@ -348,8 +348,7 @@ Create an instance and run.
 	
 	use strict;
 	use warnings;
-	use FindBin qw/$Bin/;
-	use lib $Bin . '/lib';
+	use CGIApplicationDerivedBaseClass;
 	
 	my $app = CGIApplicationDerivedBaseClass->new();
 	$app->run();

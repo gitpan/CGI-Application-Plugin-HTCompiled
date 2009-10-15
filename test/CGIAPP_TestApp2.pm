@@ -1,4 +1,4 @@
-package TestApp2;
+package CGIAPP_TestApp2;
 
 use strict;
 use base ("CGI::Application::Plugin::HTCompiled", "CGI::Application");

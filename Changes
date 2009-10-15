@@ -1,5 +1,12 @@
 Revision history for CGI-Application-Plugin-HTCompiled
 
+1.04
+    - clean up POD
+    - build the dist with Module::Build
+    - test for CGI::Application v. 4.31
+    - renamed TestApp2 to CGIAPP_TestApp2 to avoid unauthorized release warning
+    - require ExtUtils::Install >= 1.52 to properly install with makefile
+
 1.03 Tue Oct 13 20:25:50 2009
     - No code changes. I just didn't upload the last version the right way.
 

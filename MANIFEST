@@ -11,4 +11,4 @@ t/02-extend_load_tmpl.t
 t/pod-coverage.t
 t/pod.t
 test/templates/test.tmpl
-test/TestApp2.pm
+test/CGIAPP_TestApp2.pm

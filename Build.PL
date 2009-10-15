@@ -8,6 +8,7 @@ my $builder = Module::Build->new(
     dist_author         => 'Mark Stosberg<mark@summersault.com>',
     dist_version_from   => 'lib/CGI/Application/Plugin/HTCompiled.pm',
     requires => {
+		'ExtUtils::Install'			  => '>= 1.52',
         'Test::More'                  => 0,
         'Test::Exception'             => 0,
         'CGI::Application'            => '>= 4.31',

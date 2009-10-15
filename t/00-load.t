@@ -1,11 +1,12 @@
 #!perl
-use Test::More tests => 2;
+use Test::More tests => 3;
 use Test::Exception;
 use Scalar::Util;
 
 BEGIN {
+	use_ok( 'CGI::Application', 4.31 );
 	use_ok( 'CGI::Application::Plugin::HTCompiled' );
-	require_ok('CGI::Application::Plugin::HTCompiled')
+	require_ok('CGI::Application::Plugin::HTCompiled');
 };
 
 use lib './t';
