@@ -1,26 +1,26 @@
 ---
-name: CGI-Application-Plugin-HTCompiled
-version: 1.04
+abstract: 'Integrate with HTML::Template::Compiled'
 author:
-  - 'Mark Stosberg<mark@summersault.com>'
-abstract: Integrate with HTML::Template::Compiled
-license: perl
-resources:
-  license: http://dev.perl.org/licenses/
-requires:
-  CGI::Application: '>= 4.31'
-  ExtUtils::Install: '>= 1.52'
-  HTML::Template::Compiled: 0
-  Test::Exception: 0
-  Test::More: 0
-  UNIVERSAL: 0
+  - 'Alexander Becker<c a p f a n @ g m x . d e>'
 configure_requires:
-  Module::Build: 0.340201
-provides:
-  CGI::Application::Plugin::HTCompiled:
-    file: lib/CGI/Application/Plugin/HTCompiled.pm
-    version: 1.04
-generated_by: Module::Build version 0.340201
+  Module::Build: 0.36
+generated_by: 'Module::Build version 0.3617'
+license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
+name: CGI-Application-Plugin-HTCompiled
+provides:
+  CGI::Application::Plugin::HTCompiled:
+    file: lib/CGI/Application/Plugin/HTCompiled.pm
+    version: 1.05
+requires:
+  CGI::Application: 4.31
+  ExtUtils::Install: 1.52
+  HTML::Template::Compiled: 0
+  Test::Exception: 0
+  Test::More: 0
+  UNIVERSAL::isa: 0
+resources:
+  license: http://dev.perl.org/licenses/
+version: 1.05

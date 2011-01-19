@@ -7,7 +7,7 @@ use 5.006;
 use strict;
 use warnings;
 use Carp;
-use UNIVERSAL qw/isa/;
+use UNIVERSAL::isa qw/isa/;
 
 =head1 NAME
 
@@ -15,7 +15,7 @@ CGI::Application::Plugin::HTCompiled - Integrate with HTML::Template::Compiled
 
 =cut
 
-$CGI::Application::Plugin::HTCompiled::VERSION = '1.04';
+$CGI::Application::Plugin::HTCompiled::VERSION = '1.05';
 
 =head1 SYNOPSIS
 
@@ -357,6 +357,7 @@ Create an instance and run.
 
 =head1 AUTHOR
 
+Alexander Becker C<< c a p f a n .at. g m x .dot. d e >>, 
 Mark Stosberg C<< <mark@summersault.com> >>
 ...but largely modeled on HTDot plugin by Jason A. Crome. 
 

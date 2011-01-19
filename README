@@ -148,6 +148,7 @@ EXAMPLE
         
             This demonstrates, how to use CGI::Application::Plugin::HTCompiled.
         
+        
             =head1 METHODS
         
             =head2 setup()
@@ -165,6 +166,9 @@ EXAMPLE
                     /]);
                 
             } # /setup
+        
+        
+        
         
             =head2 start()
         
@@ -185,6 +189,9 @@ EXAMPLE
                     return $t->output();
             } # /start
         
+        
+        
+        
             =head1 SEE ALSO
         
             CGI::Application, CGI::Application::Plugin::HTCompiled.
@@ -204,7 +211,7 @@ EXAMPLE
             =cut
         
             1;
-        
+
     Create an instance and run.
 
             #!/usr/bin/perl
@@ -217,8 +224,9 @@ EXAMPLE
             $app->run();
 
 AUTHOR
-    Mark Stosberg "<mark@summersault.com>" ...but largely modeled on HTDot
-    plugin by Jason A. Crome.
+    Alexander Becker "c a p f a n .at. g m x .dot. d e", Mark Stosberg
+    "<mark@summersault.com>" ...but largely modeled on HTDot plugin by Jason
+    A. Crome.
 
 BUGS
     Please report any bugs or feature requests to
